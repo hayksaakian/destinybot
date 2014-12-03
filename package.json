@@ -1,0 +1,25 @@
+{
+  "name": "destinybot",
+  "version": "1.0.0",
+  "description": "a chat bot framework for destiny.gg chat",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "placeholder"
+  },
+  "keywords": [
+    "websocket",
+    "chat",
+    "bot"
+  ],
+  "author": "Hayk Saakian",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^0.4.0",
+    "jsonfile": "^2.0.0",
+    "ws": "^0.5.0"
+  }
+}
