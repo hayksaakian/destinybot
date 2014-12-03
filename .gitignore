@@ -1,3 +1,6 @@
+# Misc stuff
+*.sublime-*
+
 # ignore local config
 config/*.json
 !config/examples/*
