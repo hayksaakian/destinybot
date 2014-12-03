@@ -60,7 +60,6 @@ https://github.com/dharmaturtle/DharmaBot/blob/master/DharmaBot.py
 the goal is feature parity
 
 - generic, regex based event registration
-- 
 - plugins/manager.js to toggle plugins from chat
 - plugins/blacklist.js to manage and detect blacklisted text within messages
 - plugins/lastfm.js
