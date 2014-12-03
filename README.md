@@ -1,6 +1,6 @@
-== Node.js based Chat Bot for Destiny.gg chat
+# Node.js based Chat Bot for Destiny.gg chat
 
-= setup
+## setup
 
 you will need NPM and node.js installed.*
 
@@ -16,7 +16,7 @@ and it will create the necessary files from examples.
 
 the very least you need to do to get a working setup is simply:
 
-Set a DESTINYGG_API_KEY in the environment (via .env for example)
+### Set a DESTINYGG_API_KEY in the environment (via .env for example)
 
 You can get this key from your profile page on destiny.gg, look for 'api keys' 
 
@@ -24,7 +24,7 @@ Note: if you don't to use a .env file, (dot env) set a NODOTENV environment vari
 
 * in the future we may package the bot with https://www.npmjs.org/package/nar because it will enable installing the bot without node.js or npm already installed
 
-= plugins
+## plugins
 
 the plugin model is similar to tennu's plugin style
 
@@ -47,7 +47,7 @@ Note: If you need new npm packages, install them with
 
 make sure to add --save so they get saved to the package.json file
 
-== TODO:
+# TODO:
 
 see this for goals:
 
@@ -68,7 +68,6 @@ the goal is feature parity
 - plugins/time.js
 - plugins/etc...
 
------
 
 
 
