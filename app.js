@@ -2,6 +2,9 @@ var dotenv = require('dotenv');
 var jf = require('jsonfile');
 var fs = require('fs')
 var WebSocket = require('ws');
+// plugin caller
+var client = require('./client.js')
+var tools = require('./tools.js')
 
 // load secret variables from .env, unless you don't like it for some reason
 if(fs.existsSync('./.env') && process.env['NODOTENV'] !== 'TRUE'){
@@ -36,10 +39,10 @@ CONFIG_FILES.forEach(function (p) {
 })
 
 // load plugins
-var PLUGINS = {}
 config['plugins']['list'].forEach(function (p) {
-  PLUGINS[p] = require('./plugins/'+p+'.js')
+  client.loadPlugin(p, require('./plugins/'+p+'.js'))
 })
+
 
 // TODO: websocket setup could be modularized
 
@@ -50,12 +53,9 @@ var ws = new WebSocket('ws://'+WS_ENDPOINT, {
     'Cookie':'authtoken='+DESTINYGG_API_KEY+';'
   }
 });
-// convenience method for plugins
-ws.say = function (text) {
-  ws.send("MSG "+JSON.stringify({data: text}))
-}
 
 ws.on('open', function open() {
+  client.init(ws)
   console.log('open', 'connected at '+Date.now().toString());
 });
 
@@ -77,20 +77,7 @@ var CHATEVENTS = {
     // TODO: this has a lot of room for optimization
     // for example, maybe we want to have a regex : callback
     // thing instead of just strings. i dunno
-    if(message.data.indexOf('!') === 0){
-      var cmd = message.data.split(' ')[0]
-
-      for(var p in PLUGINS){
-        var plg = PLUGINS[p].init(ws, {})
-        var cmds = Object.keys(plg.handlers)
-
-        cmds.forEach(function(c){
-          if(cmd.indexOf(c) === 0){
-            plg.handlers[c](message)
-          }
-        })
-      }
-    }
+    client.on(message);
   },
   // TODO: handle this for moderation purposes
   'NAMES': function (ws, data) {
