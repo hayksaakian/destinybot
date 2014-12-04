@@ -3,6 +3,7 @@ var BLTPlugin = {
     // plain strings are fast, makes sure messages start with the command
     // TODO: we need to be able to figure out who set each regex
     client.on('!givemeblt', function (message) {
+      console.log('blt hook called!')
       client.say('/me gives a juicy BLT to ' + message.nick);
     });
     // regex is cool too, you can get fancier with it
