@@ -1,11 +1,16 @@
-var events = require("events"),
+var events = require('eventemitter2'),
     util   = require("util"),
     fs     = require("fs"),
     jf     = require("jsonfile");
 
 var isJS = /^([a-z]+)\.js$/i;
 var c = function() {
-  events.EventEmitter.call(this);
+  events.EventEmitter2.call(this, {
+    wildcard: true,
+    delimeter: ".",
+    newListener: false,
+    maxListeners: 48
+  });
 
   this.plugins = {};
   this.state   = {};
@@ -45,7 +50,7 @@ var c = function() {
      *
      */
     var defaultstate = plugin.state || {};
-    var statepath    = './state/' + name + '.json';
+    var statepath    = './.state/' + name + '.json';
     var state        = fs.existsSync(statepath)? jf.readFileSync(statepath): defaultstate;
 
     this.plugins[name] = new plugin.init(this, config, state);
@@ -54,7 +59,7 @@ var c = function() {
 
   var self = this;
   this.on('save', function(name) {
-    if (name && self.plugis[name])
+    if (name && self.plugins[name])
       return saveState(name, this.state[name]);
 
     for (var name in self.state) {
@@ -65,15 +70,14 @@ var c = function() {
     };
   });
 
-  // TODO launch a timer that simply emits a save event every ~1 minute to save
-  // the state references
 };
+c.prototype.log = util.log; // TODO make it "better"
 
 var saveState = function(name, state) {
-  var statepath = './state/' + name + '.json';
+  var statepath = './.state/' + name + '.json';
   jf.writeFileSync(statepath, state);
 };
 
-util.inherits(c, events.EventEmitter);
+util.inherits(c, events.EventEmitter2);
 
 module.exports = {init: c};

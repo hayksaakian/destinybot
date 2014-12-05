@@ -1,25 +1,12 @@
-var BLTPlugin = {
-    init: function (client, imports) {
-        return {
-            exports: null,
-            handlers: {
-                '!givemeblt': function (message) {
-                    client.say('/me gives a juicy BLT to ' + message.nick);
-                }
-            },
+var p = function(core, config, state) {
+  var self    = this;
+  this.core   = core;
+  this.config = config;
+  this.state  = state;
 
-            help: {
-                'command': [
-                    '!givemeblt',
-                    ' ',
-                    'Gives the requestor a juicy BLT.'
-                ]
-            },
-
-            commands: ['givemeblt'],
-            hooks: null
-        }
-    }
+  self.core.on("!givemeblt", function(arg, payload) {
+    self.core.send("MSG", {data: "/me gives a juicy BLT to " + payload.nick});
+  });
 };
 
-module.exports = BLTPlugin;
+module.exports = {init: p};

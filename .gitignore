@@ -3,11 +3,7 @@
 
 # ignore local config
 config/*.json
-!config/examples/*
-
-# Secret Variables
-*.env
-!example.env
+.state
 
 # Logs
 logs
