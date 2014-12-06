@@ -1,5 +1,5 @@
 var process = require("process");
-var core = new(require("./core.js")).init;
+var core = new(require("./core.js").init);
 
 // handle exceptions by trying to save shit and then exiting out
 // just hope that its not the saving that is causing the exception to be thrown
