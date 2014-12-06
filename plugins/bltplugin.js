@@ -5,7 +5,7 @@ var p = function(core, config, state) {
   this.state  = state;
 
   self.core.on("!givemeblt", function(arg, payload) {
-    self.core.send("MSG", {data: "/me gives a juicy BLT to " + payload.nick});
+    self.core.ay("/me gives a juicy BLT to " + payload.nick);
   });
 
   self.core.on("!givemeclub", function(arg, payload) {

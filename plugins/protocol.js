@@ -8,10 +8,10 @@ var p = function(core, config, state) {
   this.ws     = null;
 
   if (!config.apikey)
-    throw "No API key specified in config/protocol.json, dying";
+    throw "No API key specified in config/protocol.json";
 
   if (!config.url)
-    throw "No chat server url specified in config/protocol.json, dying";
+    throw "No chat server url specified in config/protocol.json";
 
   // provide convenience function to send shit
   core.send = function(action, payload) {
@@ -19,18 +19,11 @@ var p = function(core, config, state) {
   };
 
   core.on("send.*", function() {
-    var _args = []
-    for(var key in arguments){
-      _args.push(arguments[key]);
-    }
-    var trueevent = this.event.substr(5)
-    _args.unshift(trueevent)
-    arguments = {}
-    for (var i = 0; i < _args.length; i++) {
-      arguments[i.toString()] = _args[i]
-    };
-    self.marshal.apply(self, _args);
+    var args = Array.prototype.slice.call(arguments);
+    args.unshift(this.event.substr(5))
+    self.marshal.apply(self, args);
   });
+
   core.on("connect", function() {
     self.init.apply(self);
   });
@@ -42,20 +35,12 @@ var p = function(core, config, state) {
     self.ws = null;
   });
 
-  // default ping handler
-  core.on("PING", function(payload) {
-    self.core.emit("send.PING", payload);
-  });
-  core.on("ERR", function(payload) {
-    console.log("CHAT ERROR", payload)
-  });
-
   // convenience function for !commands
   core.on("MSG", function(payload) {
-    if (payload.data.indexOf('!') !== 0)
+    if (payload.data.indexOf("!") !== 0)
       return;
 
-    var pos     = payload.data.indexOf(' ');
+    var pos     = payload.data.indexOf(" ");
     var command = null;
     var arg     = null;
     if (pos < 0) // just a single command, no arguments
@@ -102,8 +87,6 @@ p.prototype.init = function() {
 };
 
 p.prototype.route = function(message, flags) {
-  console.log(message)
-  // console.log(flags)
   if (flags.binary)
     throw "Binary messages are not supported";
 
@@ -116,29 +99,23 @@ p.prototype.route = function(message, flags) {
     action = message;
   else {
     action = message.substr(0, pos);
-    if (action === 'PING') { // handle it inline, 64bit ints cannot be parsed
-      console.log("PONG " + message.substr(pos + 1))
+    if (action === "PING") { // handle it inline, 64bit ints cannot be parsed
       self.ws.send("PONG " + message.substr(pos + 1));
       return;
     }
 
     payload = JSON.parse(message.substr(pos + 1));
-    if(payload.nick === "hephaestus" && payload.data.indexOf("!test") === 0){
-      console.log('sending test reply')
-      console.log(self.ws.send)
-      self.ws.send("MSG "+ JSON.stringify({data:"test reply"}))
-    }
   }
 
   self.core.emit(action, payload);
 };
 
-p.prototype.marshal = function(e) {
+p.prototype.marshal = function(action, payload) {
   var self = this;
-  // TODO: fix this to do whatever sztanpet actually intended
-  // this is just a temporary hack that makes the bot work:
-  self.core.log(arguments);
-  self.ws.send(arguments['0'] +' '+ JSON.stringify(arguments['1']));
+  if (!self.ws)
+    return;
+
+  self.ws.send(action + " " + JSON.stringify(payload));
 };
 
 module.exports = {

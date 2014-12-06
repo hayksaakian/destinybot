@@ -1,4 +1,4 @@
-var events = require('eventemitter2'),
+var events = require("eventemitter2"),
     util   = require("util"),
     fs     = require("fs"),
     jf     = require("jsonfile");
@@ -16,7 +16,7 @@ var c = function() {
   this.plugins = {};
   this.state   = {};
 
-  var files    = fs.readdirSync('plugins');
+  var files    = fs.readdirSync("plugins");
   for (var i = files.length - 1; i >= 0; i--) {
     var file  = files[i],
         match = file.match(isJS);
@@ -25,7 +25,7 @@ var c = function() {
       continue;
 
     var name   = match[1];
-    var plugin = require('./plugins/' + file);
+    var plugin = require("./plugins/" + file);
 
     /*
      * Plugins are expected to export an object with three members:
@@ -41,7 +41,7 @@ var c = function() {
      *
      */
     var defaultconfig = plugin.config || {};
-    var confpath      = './config/' + name + '.json';
+    var confpath      = "./config/" + name + ".json";
     var config        = fs.existsSync(confpath)? jf.readFileSync(confpath): defaultconfig;
 
     /*
@@ -51,7 +51,7 @@ var c = function() {
      *
      */
     var defaultstate = plugin.state || {};
-    var statepath    = './.state/' + name + '.json';
+    var statepath    = "./.state/" + name + ".json";
     var state        = fs.existsSync(statepath) ? jf.readFileSync(statepath) : defaultstate;
 
     this.plugins[name] = new plugin.init(this, config, state);
@@ -59,7 +59,7 @@ var c = function() {
   };
 
   var self = this;
-  this.on('save', function(name) {
+  this.on("save", function(name) {
     if (name && self.plugins[name])
       return saveState(name, this.state[name]);
 
@@ -77,7 +77,7 @@ var c = function() {
 };
 
 var saveState = function(name, state) {
-  var statepath = './.state/' + name + '.json';
+  var statepath = "./.state/" + name + ".json";
   jf.writeFileSync(statepath, state);
 };
 
