@@ -19,8 +19,17 @@ var p = function(core, config, state) {
   };
 
   core.on("send.*", function() {
-    arguments.unshift(this.event);
-    self.marshal.apply(self, arguments);
+    var _args = []
+    for(var key in arguments){
+      _args.push(arguments[key]);
+    }
+    var trueevent = this.event.substr(5)
+    _args.unshift(trueevent)
+    arguments = {}
+    for (var i = 0; i < _args.length; i++) {
+      arguments[i.toString()] = _args[i]
+    };
+    self.marshal.apply(self, _args);
   });
   core.on("connect", function() {
     self.init.apply(self);
@@ -36,6 +45,9 @@ var p = function(core, config, state) {
   // default ping handler
   core.on("PING", function(payload) {
     self.core.emit("send.PING", payload);
+  });
+  core.on("ERR", function(payload) {
+    console.log("CHAT ERROR", payload)
   });
 
   // convenience function for !commands
@@ -90,6 +102,8 @@ p.prototype.init = function() {
 };
 
 p.prototype.route = function(message, flags) {
+  console.log(message)
+  // console.log(flags)
   if (flags.binary)
     throw "Binary messages are not supported";
 
@@ -103,11 +117,17 @@ p.prototype.route = function(message, flags) {
   else {
     action = message.substr(0, pos);
     if (action === 'PING') { // handle it inline, 64bit ints cannot be parsed
+      console.log("PONG " + message.substr(pos + 1))
       self.ws.send("PONG " + message.substr(pos + 1));
       return;
     }
 
     payload = JSON.parse(message.substr(pos + 1));
+    if(payload.nick === "hephaestus" && payload.data.indexOf("!test") === 0){
+      console.log('sending test reply')
+      console.log(self.ws.send)
+      self.ws.send("MSG "+ JSON.stringify({data:"test reply"}))
+    }
   }
 
   self.core.emit(action, payload);
@@ -115,7 +135,10 @@ p.prototype.route = function(message, flags) {
 
 p.prototype.marshal = function(e) {
   var self = this;
+  // TODO: fix this to do whatever sztanpet actually intended
+  // this is just a temporary hack that makes the bot work:
   self.core.log(arguments);
+  self.ws.send(arguments['0'] +' '+ JSON.stringify(arguments['1']));
 };
 
 module.exports = {

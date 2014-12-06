@@ -3,7 +3,9 @@
 
 # ignore local config
 config/*.json
-.state
+!config/example.*.json
+.state/*
+*.env
 
 # Logs
 logs

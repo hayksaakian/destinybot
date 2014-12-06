@@ -11,7 +11,8 @@ var c = function() {
     newListener: false,
     maxListeners: 48
   });
-
+  
+  this.log = util.log; // TODO make it "better"
   this.plugins = {};
   this.state   = {};
 
@@ -51,7 +52,7 @@ var c = function() {
      */
     var defaultstate = plugin.state || {};
     var statepath    = './.state/' + name + '.json';
-    var state        = fs.existsSync(statepath)? jf.readFileSync(statepath): defaultstate;
+    var state        = fs.existsSync(statepath) ? jf.readFileSync(statepath) : defaultstate;
 
     this.plugins[name] = new plugin.init(this, config, state);
     this.state[name]   = state;
@@ -71,7 +72,6 @@ var c = function() {
   });
 
 };
-c.prototype.log = util.log; // TODO make it "better"
 
 var saveState = function(name, state) {
   var statepath = './.state/' + name + '.json';

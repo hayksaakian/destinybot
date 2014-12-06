@@ -8,40 +8,28 @@ you will need NPM and node.js installed.*
 
 to get dependencies
 
-run once
-
-    node app.js
-
-and it will create the necessary files from examples.
+make a protocol.json file in the config folder containing an apikey
+follow the example of config/example.protocol.json
 
 the very least you need to do to get a working setup is simply:
 
-### Set a DESTINYGG_API_KEY in the environment (via .env for example)
+### Set a apikey variable in the protocol.json
 
-You can get this key from your profile page on destiny.gg, look for 'api keys' 
-
-Note: if you don't to use a .env file, (dot env) set a NODOTENV environment variable to TRUE
+You can get this key from your profile page on destiny.gg, under authentication,  look for 'api keys' 
 
 * in the future we may package the bot with https://www.npmjs.org/package/nar because it will enable installing the bot without node.js or npm already installed
 
 ## plugins
 
-the plugin model is similar to tennu's plugin style
-
-http://tennu.github.io/documentation/getting-started
-
 see plugins/bitplugin.js as an example
 
 in order to add a plugin, add a PLUGIN_NAME.js file 
-to the plugins folder (follow the pattern for plugins)
+to the plugins folder
 
-to activate a plugin, make sure the name of the plugin 
-is listed in the 'list' variable within config/plugins.json
+by placing it in the proper folder, your plugin will be activated.
+eventually plugins should be toggle-able via chat commands (See: TODO)
 
-the whole reason for all this is so plugins can be trivially 
-activated/deactivated via the file system, or via chat commands (See: TODO)
-
-Note: If you need new npm packages, install them with
+Note: If you need new NPM packages, install them with
 
     npm install PACKAGE_NAME --save
 
@@ -49,7 +37,9 @@ make sure to add --save so they get saved to the package.json file
 
 # TODO:
 
-see this for goals:
+see these for goals:
+
+http://www.reddit.com/r/Destiny/comments/2o7qf4/new_chat_bot_other_chat_features/
 
 https://www.reddit.com/r/Destiny/comments/2nwchw/housekeeping/
 
@@ -59,7 +49,7 @@ https://github.com/dharmaturtle/DharmaBot/blob/master/DharmaBot.py
 
 the goal is feature parity
 
-- generic, regex based event registration
+- generic, anything based event registration
 - plugins/manager.js to toggle plugins from chat
 - plugins/blacklist.js to manage and detect blacklisted text within messages
 - plugins/lastfm.js
