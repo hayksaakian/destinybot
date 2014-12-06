@@ -8,10 +8,10 @@ var p = function(core, config, state) {
   this.ws     = null;
 
   if (!config.apikey)
-    throw "No API key specified, dying";
+    throw "No API key specified in config/protocol.json, dying";
 
   if (!config.url)
-    throw "No chat server url specified, dying";
+    throw "No chat server url specified in config/protocol.json, dying";
 
   // provide convenience function to send shit
   core.send = function(action, payload) {
