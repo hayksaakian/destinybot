@@ -6,6 +6,7 @@ var p = function(core, config, state) {
   this.config = config;
   this.state  = state;
   this.ws     = null;
+  this.patterns = [];
 
   if (!config.apikey)
     throw "No API key specified, dying";
@@ -17,6 +18,33 @@ var p = function(core, config, state) {
   core.send = function(action, payload) {
     core.emit("send." + action, payload);
   };
+  // support DANKMEMES
+  core.original_on = core.on;
+  // converting regex -> string -> same regex:
+  // var x = /regex/gim; 
+  // y = new RegExp(x.source,x.toString().split('/').pop());
+  // y.toString() == x.toString()
+
+  core.on = function (pattern, callback) {
+    if(pattern instanceof RegExp){
+      // regex is slow
+      // regex.text(message.data) must be true
+      // to get the callback
+      self.patterns.push([pattern, callback])
+      core.original_on(pattern.toString(), callback)
+    }else if(pattern instanceof Function){
+      // function calls are even slower
+      // pattern(message) must be true 
+      // to get the callback
+      pattern.uid = Math.random().toString()
+      pattern.uid = pattern.uid.substr(2, pattern.uid.length)
+      self.patterns.push([pattern, callback])
+      core.original_on(pattern.uid, callback)
+    }else{
+      // strings are fast!
+      core.original_on.apply(core, arguments)
+    }
+  }
 
   core.say = function (text) {
     core.send("MSG", {data: text})
@@ -56,22 +84,35 @@ var p = function(core, config, state) {
 
   // convenience function for !commands
   core.on("MSG", function(payload) {
-    if (payload.data.indexOf('!') !== 0)
-      return;
-
-    var pos     = payload.data.indexOf(' ');
     var command = null;
     var arg     = null;
-    if (pos < 0) // just a single command, no arguments
-      command = payload.data;
-    else {
-      command = payload.data.substr(0, pos);
-      // let the user of the command decide how they want to parse the arg
-      // they can split it up after de-duplicating the spaces themselves, etc...
-      arg     = payload.data.substr(pos + 1);
-    }
+    if (payload.data.indexOf('!') === 0){
+      var pos     = payload.data.indexOf(' ');
+      if (pos < 0) // just a single command, no arguments
+        command = payload.data;
+      else {
+        command = payload.data.substr(0, pos);
+        // let the user of the command decide how they want to parse the arg
+        // they can split it up after de-duplicating the spaces themselves, etc...
+        arg     = payload.data.substr(pos + 1);
+      }
 
-    core.emit(command, arg, payload);
+      core.emit(command, arg, payload);
+    }else{
+      for (var i = self.patterns.length - 1; i >= 0; i--) {
+        var pattern = self.patterns[i][0];
+        var cb = self.patterns[i][1];
+        if (pattern instanceof RegExp) {
+          if(pattern.test(payload.data)){
+            core.emit(pattern.toString(), arg, payload)
+          }
+        }else if(pattern instanceof Function){
+          if(pattern(payload)){
+            core.emit(pattern.uid, arg, payload)
+          }
+        }
+      };
+    }
   });
 
   self.init.apply(self);
@@ -82,6 +123,7 @@ p.prototype.init = function() {
   if (this.ws)
     self.core.emit("disconnect");
 
+  this.patterns = []
   this.ws = new WebSocket(this.config.url, {
     origin: "*",
     headers: {
@@ -127,11 +169,6 @@ p.prototype.route = function(message, flags) {
     }
 
     payload = JSON.parse(message.substr(pos + 1));
-    if(payload.nick === "hephaestus" && payload.data.indexOf("!test") === 0){
-      console.log('sending test reply')
-      console.log(self.ws.send)
-      self.ws.send("MSG "+ JSON.stringify({data:"test reply"}))
-    }
   }
 
   self.core.emit(action, payload);
