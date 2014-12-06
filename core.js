@@ -49,8 +49,8 @@ var c = function() {
      */
     var defaultconfig = plugin.config || {};
     var confpath      = "./config/" + name + ".json";
-    var config        = fs.existsSync(confpath)? jf.readFileSync(confpath): defaultconfig;
-    config            = extend(config, defaultconfig);
+    var config        = fs.existsSync(confpath) ? jf.readFileSync(confpath) : defaultconfig;
+    config            = extend(defaultconfig, config);
 
     /*
      * Pass the state, plugins should only modify the state, never override it
@@ -63,7 +63,7 @@ var c = function() {
     var defaultstate = plugin.state || {};
     var statepath    = "./.state/" + name + ".json";
     var state        = fs.existsSync(statepath) ? jf.readFileSync(statepath) : defaultstate;
-    state            = extend(state, defaultstate);
+    state            = extend(defaultstate, state);
 
     this.plugins[name] = new plugin.init(this, config, state);
     this.state[name]   = state;
