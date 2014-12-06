@@ -3,7 +3,7 @@ var events = require("eventemitter2"),
     fs     = require("fs"),
     jf     = require("jsonfile");
 
-var isJS = /^([a-z]+)\.js$/i;
+var isJS = /^([a-z0-9]+)\.js$/i;
 var c = function() {
   events.EventEmitter2.call(this, {
     wildcard: true,
