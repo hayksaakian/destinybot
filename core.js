@@ -1,7 +1,8 @@
 var events = require("eventemitter2"),
     util   = require("util"),
     fs     = require("fs"),
-    jf     = require("jsonfile");
+    jf     = require("jsonfile"),
+    extend = require("extend");
 
 var isJS = /^([a-z0-9]+)\.js$/i;
 var c = function() {
@@ -49,6 +50,7 @@ var c = function() {
     var defaultconfig = plugin.config || {};
     var confpath      = "./config/" + name + ".json";
     var config        = fs.existsSync(confpath)? jf.readFileSync(confpath): defaultconfig;
+    config            = extend(config, defaultconfig);
 
     /*
      * Pass the state, plugins should only modify the state, never override it
@@ -61,6 +63,7 @@ var c = function() {
     var defaultstate = plugin.state || {};
     var statepath    = "./.state/" + name + ".json";
     var state        = fs.existsSync(statepath) ? jf.readFileSync(statepath) : defaultstate;
+    state            = extend(state, defaultstate);
 
     this.plugins[name] = new plugin.init(this, config, state);
     this.state[name]   = state;
