@@ -70,6 +70,9 @@ var c = function() {
       saveState(name, self.state[name]);
     };
   });
+  self.say = function(text) {
+    this.send("MSG", {data: text})
+  };
 
 };
 
