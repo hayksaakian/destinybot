@@ -18,6 +18,10 @@ var p = function(core, config, state) {
     core.emit("send." + action, payload);
   };
 
+  core.say = function (text) {
+    core.send("MSG", {data: text})
+  };
+
   core.on("send.*", function() {
     var _args = []
     for(var key in arguments){
