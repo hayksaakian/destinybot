@@ -15,6 +15,7 @@ var p = function(core, config, state) {
     }
   });
   // you can use regexes but you should prefer not to
+  // because they will be ran against every message data (text)
   self.core.on(/deliver a blt/i, function (arg, message) {
     var text = message.data.toLowerCase();
     var to = text.match(/\bto\s+\S+/i)
@@ -29,12 +30,13 @@ var p = function(core, config, state) {
       }
     }
   })
+  // testing with functions works too. 
+  // just make sure to return true if you want to actually process the message
   self.core.on(function (message_obj) {
     if (message_obj.data.indexOf("secret password") !== -1 && ((message_obj.nick.indexOf('e') !== -1 && message_obj.nick.indexOf('a') !== -1) || message_obj.data.indexOf('hunter2') !== -1) )  {
       return true;
     }
-  },
-  function (arg, message_obj) {
+  }, function (arg, message_obj) {
     self.core.say("/me gives a secret BLT with extra secret sauce to "+message_obj.nick);
   })
 };
