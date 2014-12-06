@@ -4,7 +4,9 @@ var core = new(require("./core.js")).init;
 // handle exceptions by trying to save shit and then exiting out
 // just hope that its not the saving that is causing the exception to be thrown
 process.on("uncaughtException", function(err) {
-  console.log("Exception: " + err);
+
+  console.log("Exception: ");
+  console.log(err.stack)
   core.emit("save");
   process.exit(1);
 });
