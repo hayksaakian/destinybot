@@ -3,6 +3,6 @@
 git diff-index --cached --diff-filter=ACMRTUXB --name-only HEAD | while read -r line;
 do
   if [[ "$line" == /\.js$/ ]]; then
-    js-beautify --config=../jsbeautifyrc -r -f "$line";
+    js-beautify --config=../.jsbeautifyrc -r -f "$line";
   fi
 done
