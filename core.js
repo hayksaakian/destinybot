@@ -11,8 +11,9 @@ var c = function() {
     newListener: false,
     maxListeners: 48
   });
-  
-  this.log = util.log; // TODO make it "better"
+
+  var self     = this;
+  this.log     = util.log; // TODO make it "better"
   this.plugins = {};
   this.state   = {};
 
@@ -58,7 +59,6 @@ var c = function() {
     this.state[name]   = state;
   };
 
-  var self = this;
   this.on("save", function(name) {
     if (name && self.plugins[name])
       return saveState(name, this.state[name]);
@@ -70,15 +70,18 @@ var c = function() {
       saveState(name, self.state[name]);
     };
   });
+
+  // expose a convenience function for the most used action
   self.say = function(text) {
     self.send("MSG", {data: text})
   };
-
 };
 
 var saveState = function(name, state) {
   var statepath = "./.state/" + name + ".json";
-  jf.writeFileSync(statepath, state);
+  var temppath  = statepath + '.temp';
+  jf.writeFileSync(temppath, state);
+  fs.renameSync(temppath, statepath);
 };
 
 util.inherits(c, events.EventEmitter2);
