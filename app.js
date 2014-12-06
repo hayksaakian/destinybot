@@ -4,7 +4,6 @@ var core = new(require("./core.js").init);
 // handle exceptions by trying to save shit and then exiting out
 // just hope that its not the saving that is causing the exception to be thrown
 process.on("uncaughtException", function(err) {
-
   console.log("Exception: ");
   console.log(err.stack)
   core.emit("save");
@@ -20,7 +19,7 @@ process.on("SIGINT", function() {
 // set up auto-saving of plugin state every two minutes
 setInterval(function() {
   core.emit("save");
-}, 1000 * 60 * 2 );
+}, 1000 * 60 * 2);
 
 // bail when banned
 core.on("BANNED", function() {

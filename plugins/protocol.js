@@ -1,11 +1,11 @@
 var WebSocket = require("ws");
 
 var p = function(core, config, state) {
-  var self    = this;
-  this.core   = core;
+  var self = this;
+  this.core = core;
   this.config = config;
-  this.state  = state;
-  this.ws     = null;
+  this.state = state;
+  this.ws = null;
 
   if (!config.apikey)
     throw "No API key specified in config/protocol.json";
@@ -67,10 +67,10 @@ p.prototype.route = function(message, flags) {
   if (flags.binary)
     throw "Binary messages are not supported";
 
-  var self    = this;
-  var action  = null;
+  var self = this;
+  var action = null;
   var payload = null;
-  var pos     = message.indexOf(" ");
+  var pos = message.indexOf(" ");
 
   if (pos < 0) // no space => the whole message is an action
     action = message;

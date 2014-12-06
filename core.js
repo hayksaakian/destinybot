@@ -1,8 +1,8 @@
 var events = require("eventemitter2"),
-    util   = require("util"),
-    fs     = require("fs"),
-    jf     = require("jsonfile"),
-    extend = require("extend");
+  util = require("util"),
+  fs = require("fs"),
+  jf = require("jsonfile"),
+  extend = require("extend");
 
 var isJS = /^([a-z0-9]+)\.js$/i;
 var c = function() {
@@ -13,22 +13,22 @@ var c = function() {
     maxListeners: 48
   });
 
-  var self     = this;
+  var self = this;
   // object, keyed by the name of the plugin, value is the instantiated plugin
   this.plugins = {};
 
   // object, keyed by the name of the plugin, value is the state of the plugin
-  this.state   = {};
+  this.state = {};
 
-  var files    = fs.readdirSync("plugins");
+  var files = fs.readdirSync("plugins");
   for (var i = files.length - 1; i >= 0; i--) {
-    var file  = files[i],
-        match = file.match(isJS);
+    var file = files[i],
+      match = file.match(isJS);
 
     if (!match)
       continue;
 
-    var name   = match[1];
+    var name = match[1];
     var plugin = require("./plugins/" + file);
 
     /*
@@ -48,9 +48,9 @@ var c = function() {
      *
      */
     var defaultconfig = plugin.config || {};
-    var confpath      = "./config/" + name + ".json";
-    var config        = fs.existsSync(confpath) ? jf.readFileSync(confpath) : defaultconfig;
-    config            = extend(defaultconfig, config);
+    var confpath = "./config/" + name + ".json";
+    var config = fs.existsSync(confpath) ? jf.readFileSync(confpath) : {};
+    config = extend(defaultconfig, config);
 
     /*
      * Pass the state, plugins should only modify the state, never override it
@@ -61,12 +61,12 @@ var c = function() {
      *
      */
     var defaultstate = plugin.state || {};
-    var statepath    = "./.state/" + name + ".json";
-    var state        = fs.existsSync(statepath) ? jf.readFileSync(statepath) : defaultstate;
-    state            = extend(defaultstate, state);
+    var statepath = "./.state/" + name + ".json";
+    var state = fs.existsSync(statepath) ? jf.readFileSync(statepath) : {};
+    state = extend(defaultstate, state);
 
     this.plugins[name] = new plugin.init(this, config, state);
-    this.state[name]   = state;
+    this.state[name] = state;
   };
 
   this.on("save", function(name) {
@@ -83,10 +83,14 @@ var c = function() {
 
   // expose a logging function
   this.log = util.log; // TODO make it "better"
+
   // expose a convenience function for the most used action
   this.say = function(text) {
-    self.send("MSG", {data: text})
+    self.send("MSG", {
+      data: text
+    })
   };
+
   // decouple how the protocol expects its events with this function
   // any new protocol needs to handle sending of messages this way
   this.send = function(action, payload) {
@@ -100,11 +104,13 @@ var saveState = function(name, state) {
     return;
 
   var statepath = "./.state/" + name + ".json";
-  var temppath  = statepath + '.temp';
+  var temppath = statepath + ".temp";
   jf.writeFileSync(temppath, state);
   fs.renameSync(temppath, statepath);
 };
 
 util.inherits(c, events.EventEmitter2);
 
-module.exports = {init: c};
+module.exports = {
+  init: c
+};
