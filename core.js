@@ -92,6 +92,10 @@ var c = function() {
 };
 
 var saveState = function(name, state) {
+  // do not save the state if the state is empty or falsey
+  if (!state || !Object.keys(state).length)
+    return;
+
   var statepath = "./.state/" + name + ".json";
   var temppath  = statepath + '.temp';
   jf.writeFileSync(temppath, state);
