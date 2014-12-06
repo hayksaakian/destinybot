@@ -71,7 +71,7 @@ var c = function() {
     };
   });
   self.say = function(text) {
-    this.send("MSG", {data: text})
+    self.send("MSG", {data: text})
   };
 
 };
