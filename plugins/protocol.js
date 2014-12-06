@@ -13,14 +13,11 @@ var p = function(core, config, state) {
   if (!config.url)
     throw "No chat server url specified in config/protocol.json";
 
-  // provide convenience function to send shit
-  core.send = function(action, payload) {
-    core.emit("send." + action, payload);
-  };
-
+  // the "standard", generic way we handle the sending of anything
   core.on("send.*", function() {
+    // have to convert arguments into a proper array, so that .unshift works on it
     var args = Array.prototype.slice.call(arguments);
-    args.unshift(this.event.substr(5))
+    args.unshift(this.event.substr(5));
     self.marshal.apply(self, args);
   });
 
@@ -33,26 +30,6 @@ var p = function(core, config, state) {
 
     self.ws.terminate();
     self.ws = null;
-  });
-
-  // convenience function for !commands
-  core.on("MSG", function(payload) {
-    if (payload.data.indexOf("!") !== 0)
-      return;
-
-    var pos     = payload.data.indexOf(" ");
-    var command = null;
-    var arg     = null;
-    if (pos < 0) // just a single command, no arguments
-      command = payload.data;
-    else {
-      command = payload.data.substr(0, pos);
-      // let the user of the command decide how they want to parse the arg
-      // they can split it up after de-duplicating the spaces themselves, etc...
-      arg     = payload.data.substr(pos + 1);
-    }
-
-    core.emit(command, arg, payload);
   });
 
   self.init.apply(self);

@@ -13,8 +13,10 @@ var c = function() {
   });
 
   var self     = this;
-  this.log     = util.log; // TODO make it "better"
+  // object, keyed by the name of the plugin, value is the instantiated plugin
   this.plugins = {};
+
+  // object, keyed by the name of the plugin, value is the state of the plugin
   this.state   = {};
 
   var files    = fs.readdirSync("plugins");
@@ -35,10 +37,13 @@ var c = function() {
      *     this is mandatory
      *
      *   - config, an object that represents the default config for the plugin
-     *     this is optional
+     *     this is optional, if the plugin needs an API key to function for example
+     *     this is where we copy the file into the config/nameofplugin.json file
+     *     and that is where the user should customize it
      *
-     *   - state, an object represeting the default state for the plugin
-     *     this is optional
+     *   - state, an object representing the default state for the plugin
+     *     this is optional, used for example storing banned links, anything
+     *     that needs to be persisted
      *
      */
     var defaultconfig = plugin.config || {};
@@ -49,6 +54,8 @@ var c = function() {
      * Pass the state, plugins should only modify the state, never override it
      * because it is meant to be a reference, the core periodically saves
      * the state it has a reference to
+     * TLDR; no state = {}, but yes state.justmodifying = ['foo']
+     *       AKA only ever just using the state that we pass
      *
      */
     var defaultstate = plugin.state || {};
@@ -71,9 +78,16 @@ var c = function() {
     };
   });
 
+  // expose a logging function
+  this.log = util.log; // TODO make it "better"
   // expose a convenience function for the most used action
-  self.say = function(text) {
+  this.say = function(text) {
     self.send("MSG", {data: text})
+  };
+  // decouple how the protocol expects its events with this function
+  // any new protocol needs to handle sending of messages this way
+  this.send = function(action, payload) {
+    self.emit("send." + action, payload);
   };
 };
 
