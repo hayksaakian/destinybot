@@ -2,6 +2,7 @@
 var p = function(core, config, state) {
   var self = this;
   this.core = core;
+  this.state = state;
 
   // convenience function for !commands
   // currently it is not a prefix match, it only matches the proper, full command
@@ -23,8 +24,33 @@ var p = function(core, config, state) {
 
     core.emit(command, arg, payload);
   });
+
+  // convenience function for handling !commands that should be ratelimited
+  core.on("ratelimit.", function(cb, cooldown) {
+    var command = this.event.substr(10);
+    if (command.indexOf("!") !== 0)
+      throw new Error("Not a !command passed to the ratelimit. event");
+
+    if (!self.state.ratelimit[command])
+      self.state.ratelimit[command] = {
+        lastused: 0
+      };
+
+    core.on(command, function(arg, payload) {
+      var now = Date.now();
+      var s = self.state.ratelimit[command];
+      if (now - s.lastused < cooldown)
+        return;
+
+      s.lastused = now;
+      cb(arg, payload)
+    });
+  });
 };
 
 module.exports = {
-  init: p
+  init: p,
+  state: {
+    ratelimit: {}
+  }
 };

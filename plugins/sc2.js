@@ -4,7 +4,8 @@ var moment = require("moment")
 var default_config = {
   endpoint: "http://us.battle.net/api/sc2/profile/310150/1/Destiny/matches",
   human_endpoint: "http://us.battle.net/sc2/en/profile/310150/1/Destiny/",
-  cooldown: 1000 * 60 * 2 // 2 minutes
+  cooldown: 1000 * 60 * 2, // 2 minutes
+  ratelimit: 1000 * 30
 }
 
 var default_state = {
@@ -50,12 +51,12 @@ var p = function(core, config, state) {
     })
   }
 
-  self.core.on("!sc2", self.cb)
-  self.core.on("!sc", self.cb)
-  self.core.on("!starcraft", self.cb)
-  self.core.on("!starcraft2", self.cb)
-  self.core.on("!infestiny", self.cb)
-  self.core.on("!abathur", self.cb)
+  self.core.on("ratelimit.!sc2", self.cb, config.ratelimit)
+  self.core.on("ratelimit.!sc", self.cb, config.ratelimit)
+  self.core.on("ratelimit.!starcraft", self.cb, config.ratelimit)
+  self.core.on("ratelimit.!starcraft2", self.cb, config.ratelimit)
+  self.core.on("ratelimit.!infestiny", self.cb, config.ratelimit)
+  self.core.on("ratelimit.!abathur", self.cb, config.ratelimit)
 }
 
 module.exports = {

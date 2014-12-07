@@ -45,11 +45,11 @@ var p = function(core, config, state) {
     })
   }
 
-  self.core.on("!song", self.cb)
-  self.core.on("!music", self.cb)
-  self.core.on("!playlist", function(arg, payload) {
+  self.core.on("ratelimit.!song", self.cb, config.ratelimit)
+  self.core.on("ratelimit.!music", self.cb, config.ratelimit)
+  self.core.on("ratelimit.!playlist", function(arg, payload) {
     self.core.say("Playlist at last.fm/user/StevenBonnellII");
-  });
+  }, config.ratelimit);
 
 };
 
@@ -57,6 +57,7 @@ module.exports = {
   init: p,
   config: {
     cooldown: 1000 * 60 * 2, // cache for 2 minutes
+    ratelimit: 1000 * 30,
     apiurl: 'http://ws.audioscrobbler.com/2.0/',
     apiparams: {
       user: 'StevenBonnellII',

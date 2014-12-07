@@ -14,14 +14,9 @@ var p = function(core, config, state) {
     self.core.emit("penalize.minor", payload.nick, "facespam");
   });
 
-  self.core.on("!emotes", function(arg, payload) {
-    var now = Date.now()
-    if (now - state.lastmention > config.cooldown)
-      return;
-
+  self.core.on("ratelimit.!emotes", function(arg, payload) {
     self.core.say(payload.nick + ": /emotes or see " + config.linkurl + " also, don't forget that we have tab-autocomplete for emotes");
-    state.lastmention = now;
-  });
+  }, config.ratelimit);
 
   self.compileRegex = function() {
     var self = this;
@@ -57,10 +52,9 @@ module.exports = {
   config: {
     fetchurl: 'http://www.destiny.gg/chat/emotes.json',
     linkurl: 'destiny.gg/emotes',
-    cooldown: 30 * 1000
+    ratelimit: 30 * 1000
   },
   state: {
-    lastmention: 0,
     emotes: [
       "Dravewin", "INFESTINY", "FIDGETLOL", "Hhhehhehe", "GameOfThrows",
       "WORTH", "FeedNathan", "Abathur", "LUL", "Heimerdonger", "SoSad",
