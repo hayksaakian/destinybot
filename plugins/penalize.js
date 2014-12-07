@@ -99,8 +99,7 @@ var p = function(core, config, state) {
 
 module.exports = {
   init: p,
-  config,
-  {
+  config: {
     minor: {
       def: 60 * 1000, // default 1 minute mute
       mul: 5, // every other infraction will multiply it by this much
