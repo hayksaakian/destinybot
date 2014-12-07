@@ -9,10 +9,10 @@ var p = function(core, config, state) {
   this.state = state;
 
   if (!config.apiparams.user)
-    throw "No user specified in config/song.json";
+    throw new Error("No user specified in config/song.json");
 
   if (!config.apiparams.api_key)
-    throw "No API key specified in config/song.json, Get a key from last.fm/api";
+    throw new Error("No API key specified in config/song.json, Get a key from last.fm/api");
 
   var endpointurl = config.apiurl + '?' + querystring.stringify(config.apiparams);
 

@@ -23,7 +23,7 @@ setInterval(function() {
 
 // bail when banned
 core.on("BANNED", function() {
-  throw "Banned, exiting";
+  throw new Error("Banned, exiting");
 });
 
 // handle auto-reconnections

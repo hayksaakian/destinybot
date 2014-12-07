@@ -8,10 +8,10 @@ var p = function(core, config, state) {
   this.ws = null;
 
   if (!config.apikey)
-    throw "No API key specified in config/protocol.json";
+    throw new Error("No API key specified in config/protocol.json");
 
   if (!config.url)
-    throw "No chat server url specified in config/protocol.json";
+    throw new Error("No chat server url specified in config/protocol.json");
 
   // the "standard", generic way we handle the sending of anything
   core.on("send.*", function() {
@@ -65,7 +65,7 @@ p.prototype.init = function() {
 
 p.prototype.route = function(message, flags) {
   if (flags.binary)
-    throw "Binary messages are not supported";
+    throw new Error("Binary messages are not supported");
 
   var self = this;
   var action = null;
