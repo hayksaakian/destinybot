@@ -17,7 +17,8 @@ var p = function(core, config, state) {
   var endpointurl = config.apiurl + '?' + querystring.stringify(config.apiparams);
 
   self.cb = function(arg, payload) {
-    if (state.lastresult && moment().diff(moment(state.lastcheck)) < config.cooldown) {
+    var now = Date.now()
+    if (state.lastresult && now - state.lastcheck < config.cooldown) {
       self.core.say(state.lastresult)
       return
     }
@@ -27,7 +28,7 @@ var p = function(core, config, state) {
       json: true
     }, function(error, response, data) {
       if (error || response.statusCode !== 200) {
-        self.core.say('Song API timed out. DaFeels');
+        self.core.log('Song API timed out. DaFeels');
         return
       }
 
@@ -38,7 +39,7 @@ var p = function(core, config, state) {
         var output = data.recenttracks.track['artist']['#text'] + ' - ' + data.recenttracks.track['name'];
       }
 
-      state.lastcheck = new Date()
+      state.lastcheck = now
       state.lastresult = output
       self.core.say(output)
     })
@@ -66,7 +67,7 @@ module.exports = {
     }
   },
   state: {
-    lastcheck: new Date('2014-01-01'),
+    lastcheck: 0,
     lastresult: null
   }
 };

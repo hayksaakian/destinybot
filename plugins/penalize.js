@@ -54,14 +54,14 @@ var p = function(core, config, state) {
     var record = {
       score: 0,
       lastinfraction: 0,
-      numberofinfactions: 0
+      numberofinfractions: 0
     };
 
     if (state.nicks[nick])
       record = extend(record, state.nicks[nick]);
 
     record.lastinfraction = now;
-    record.numberofinfactions += 1;
+    record.numberofinfractions += 1;
 
     if (!record.score)
       record.score = settings.def;
