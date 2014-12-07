@@ -20,7 +20,7 @@ var p = function(core, config, state) {
 
   self.compileRegex = function() {
     var self = this;
-    self.state.regex = new RegExp('(?:^|[\\s,\\.\\?!])(' + self.state.emoticons.join('|') + ')(?=$|[\\s,\\.\\?!])', 'gm');
+    self.state.regex = new RegExp('(?:^|[\\s,\\.\\?!])(' + self.state.emotes.join('|') + ')(?=$|[\\s,\\.\\?!])', 'gm');
   }.bind(self);
 
   self.refreshEmotes = function() {
