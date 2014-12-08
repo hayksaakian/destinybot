@@ -51,12 +51,12 @@ var p = function(core, config, state) {
     })
   }
 
-  self.core.on("ratelimit.!sc2", self.cb, config.ratelimit)
-  self.core.on("ratelimit.!sc", self.cb, config.ratelimit)
-  self.core.on("ratelimit.!starcraft", self.cb, config.ratelimit)
-  self.core.on("ratelimit.!starcraft2", self.cb, config.ratelimit)
-  self.core.on("ratelimit.!infestiny", self.cb, config.ratelimit)
-  self.core.on("ratelimit.!abathur", self.cb, config.ratelimit)
+  self.core.emit("ratelimit.!sc2", self.cb, config.ratelimit)
+  self.core.emit("ratelimit.!sc", self.cb, config.ratelimit)
+  self.core.emit("ratelimit.!starcraft", self.cb, config.ratelimit)
+  self.core.emit("ratelimit.!starcraft2", self.cb, config.ratelimit)
+  self.core.emit("ratelimit.!infestiny", self.cb, config.ratelimit)
+  self.core.emit("ratelimit.!abathur", self.cb, config.ratelimit)
 }
 
 module.exports = {

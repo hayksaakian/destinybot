@@ -30,6 +30,7 @@ var p = function(core, config, state) {
 
     self.ws.terminate();
     self.ws = null;
+    self.core.emit("disconnected");
   });
 
   self.init.apply(self);
@@ -53,10 +54,15 @@ p.prototype.init = function() {
   });
   this.ws.on("close", function(code, message) {
     self.core.log("Protocol: Disconnected with code: ", code, " msg: ", message);
+    self.ws.terminate();
+    self.ws = null;
     self.core.emit("disconnected");
   });
   this.ws.on("error", function(e) {
     self.core.log("Protocol: Error received: ", e);
+    self.ws.terminate();
+    self.ws = null;
+    self.core.emit("disconnected");
   });
   this.ws.on("message", function() {
     self.route.apply(self, arguments);
@@ -84,6 +90,7 @@ p.prototype.route = function(message, flags) {
     payload = JSON.parse(message.substr(pos + 1));
   }
 
+  self.core.d("Protocol: routing", message);
   self.core.emit(action, payload);
 };
 
@@ -92,7 +99,9 @@ p.prototype.marshal = function(action, payload) {
   if (!self.ws)
     return;
 
-  self.ws.send(action + " " + JSON.stringify(payload));
+  var msg = action + " " + JSON.stringify(payload);
+  self.core.d("Protocol: sending", msg);
+  self.ws.send(msg);
 };
 
 module.exports = {

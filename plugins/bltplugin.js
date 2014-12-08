@@ -8,9 +8,9 @@ var p = function(core, config, state) {
     self.core.say("/me gives a juicy BLT to " + payload.nick);
   });
 
-  self.core.on("!givemeclub", function(arg, payload) {
+  self.core.emit("ratelimit.!givemeclub", function(arg, payload) {
     self.core.say("/me gives a fresh Turkey Club to " + payload.nick);
-  });
+  }, 5 * 1000);
 };
 
 module.exports = {init: p};

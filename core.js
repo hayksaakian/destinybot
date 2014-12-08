@@ -10,7 +10,7 @@ var c = function() {
     wildcard: true,
     delimeter: ".",
     newListener: false,
-    maxListeners: 48
+    maxListeners: 480
   });
 
   var self = this;
@@ -19,6 +19,13 @@ var c = function() {
 
   // object, keyed by the name of the plugin, value is the state of the plugin
   this.state = {};
+
+  // expose logging functions
+  this.log = console.log; // TODO make it "better"
+  if (process.argv.length > 2)
+    this.d = console.log;
+  else
+    this.d = function() {};
 
   var files = fs.readdirSync("plugins");
   for (var i = files.length - 1; i >= 0; i--) {
@@ -67,6 +74,7 @@ var c = function() {
 
     this.plugins[name] = new plugin.init(this, config, state);
     this.state[name] = state;
+    this.d("Core: loaded plugin", name);
   };
 
   this.on("save", function(name) {
@@ -80,9 +88,6 @@ var c = function() {
       saveState(name, self.state[name]);
     };
   });
-
-  // expose a logging function
-  this.log = util.log; // TODO make it "better"
 
   // expose a convenience function for the most used action
   this.say = function(text) {

@@ -1,4 +1,3 @@
-var process = require("process");
 var core = new(require("./core.js").init);
 
 // handle exceptions by trying to save shit and then exiting out
