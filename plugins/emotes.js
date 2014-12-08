@@ -45,6 +45,7 @@ var p = function(core, config, state) {
 
   // refresh emotes every two minutes
   setInterval(self.refreshEmotes, 2 * 60 * 1000);
+  self.refreshEmotes();
 };
 
 module.exports = {

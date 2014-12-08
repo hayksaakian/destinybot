@@ -57,8 +57,8 @@ var p = function(core, config, state) {
       numberofinfractions: 0
     };
 
-    if (state.nicks[nick])
-      record = extend(record, state.nicks[nick]);
+    if (state[type][nick])
+      record = extend(record, state[type][nick]);
 
     record.lastinfraction = now;
     record.numberofinfractions += 1;
@@ -68,7 +68,7 @@ var p = function(core, config, state) {
     else
       record.score = record.score * settings.mul;
 
-    state.nicks[nick] = record;
+    state[type][nick] = record;
     self.core.emit("penalize.mute", nick, record.score, reason);
   };
 
