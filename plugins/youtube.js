@@ -15,7 +15,7 @@ var default_config = {
   },
   human_endpoint: "http://youtube.com/destiny",
   cooldown: 1000 * 60 * 2, // 2 minutes
-  checktime: 1000 ** 60 * 4,
+  checktime: 1000 * 60 * 4,
   ratelimit: 1000 * 30
 }
 
