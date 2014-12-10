@@ -45,9 +45,8 @@ var p = function(core, config, state) {
     })
   }
 
-  self.core.emit("ratelimit.!song", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!music", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!playlist", function(arg, payload) {
+  self.core.emit("cmdratelimit.song|music", self.cb, config.ratelimit)
+  self.core.emit("cmdratelimit.playlist", function(arg, payload) {
     self.core.say("Playlist at last.fm/user/StevenBonnellII");
   }, config.ratelimit);
 

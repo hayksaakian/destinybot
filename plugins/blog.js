@@ -66,8 +66,7 @@ var p = function(core, config, state) {
     });
   }
 
-  self.core.emit("ratelimit.!blog", self.cb, self.config.ratelimit);
-  self.core.emit("ratelimit.!bloggerino", self.cb, self.config.ratelimit);
+  self.core.emit("cmdratelimit.blog", self.cb, self.config.ratelimit);
 
   setInterval(function() {
     self.update(false);

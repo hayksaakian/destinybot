@@ -14,10 +14,6 @@ var p = function(core, config, state) {
     self.core.emit("penalize.minor", payload.nick, "facespam");
   });
 
-  self.core.on("ratelimit.!emotes", function(arg, payload) {
-    self.core.say(payload.nick + ": /emotes or see " + config.linkurl + " also, don't forget that we have tab-autocomplete for emotes");
-  }, config.ratelimit);
-
   self.compileRegex = function() {
     var self = this;
     self.state.regex = new RegExp('(?:^|[\\s,\\.\\?!])(' + self.state.emotes.join('|') + ')(?=$|[\\s,\\.\\?!])', 'gm');
@@ -46,6 +42,10 @@ var p = function(core, config, state) {
   // refresh emotes every two minutes
   setInterval(self.refreshEmotes, 2 * 60 * 1000);
   self.refreshEmotes();
+
+  self.core.emit("cmdratelimit.emotes", function(arg, payload) {
+    self.core.say(payload.nick + ": /emotes or see " + config.linkurl + " also, don't forget that we have tab-autocomplete for emotes");
+  }, config.ratelimit);
 };
 
 module.exports = {

@@ -51,12 +51,7 @@ var p = function(core, config, state) {
     })
   }
 
-  self.core.emit("ratelimit.!sc2", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!sc", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!starcraft", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!starcraft2", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!infestiny", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!abathur", self.cb, config.ratelimit)
+  self.core.emit("cmdratelimit.sc|starcraft|infestiny|abathur", self.cb, config.ratelimit)
 }
 
 module.exports = {
