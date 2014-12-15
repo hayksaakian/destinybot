@@ -4,7 +4,7 @@ var events = require("eventemitter2"),
   jf = require("jsonfile"),
   extend = require("extend");
 
-var isJS = /^([a-z0-9]+)\.js$/i;
+var isJS = /^([a-z0-9-]+)\.js$/i;
 var c = function() {
   events.EventEmitter2.call(this, {
     wildcard: true,
@@ -28,7 +28,7 @@ var c = function() {
     this.d = function() {};
 
   var files = fs.readdirSync("plugins");
-  for (var i = files.length - 1; i >= 0; i--) {
+  for (var i = 0, j = files.length; i < j; i++) {
     var file = files[i],
       match = file.match(isJS);
 

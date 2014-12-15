@@ -25,10 +25,15 @@ core.on("BANNED", function() {
   throw new Error("Banned, exiting");
 });
 
-// handle auto-reconnections
+// handle auto-reconnections, if the connection failed for the first time,
+// reconnect more quickly
+var failedconnecting = false;
+core.on("connected", function() {
+  failedconnecting = false;
+});
 core.on("disconnected", function() {
-  // just connect at once, not even throttling
-  process.nextTick(function() {
+  var cooldown = failedconnecting ? (Math.random() * 200) + 100 : (Math.random() * 200) + 500;
+  setTimeout(function() {
     core.emit("connect");
-  });
+  }, cooldown);
 });

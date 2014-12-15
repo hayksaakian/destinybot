@@ -26,7 +26,7 @@ var p = function(core, config, state) {
   // convenience function for !commands
   // currently it is not a prefix match, it only matches the proper, full command
   core.on("MSG", function(payload) {
-    if (payload.data.substr(0, 1) !== "!")
+    if (payload.data.length === 0 || payload.data[0] !== "!")
       return;
 
     var pos = payload.data.indexOf(" ");
