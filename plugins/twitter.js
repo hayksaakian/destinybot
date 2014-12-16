@@ -36,10 +36,11 @@ var p = function(core, config, state) {
     // turn t.co urls into real urls
     for (var i = tweet.entities.urls.length - 1; i >= 0; i--) {
       var urlobj = tweet.entities.urls[i]
-      if (tweet.text.indexOf(urlobj.url) !== -1) {
+      if (tweet.text.indexOf(urlobj.url) !== -1)
         tweet.text = tweet.text.replace(urlobj.url, urlobj.display_url)
-      }
+
     }
+
     var output = ent.decode(tweet.text) + " | follow at twitter.com/" + tweet.user.screen_name
 
     var dt = moment().diff(moment(tweet.created_at))
@@ -93,26 +94,27 @@ var p = function(core, config, state) {
     self.state.lasttweet = tweet
     self.core.say(self.printTweet(tweet))
   })
+
   self.ts.on('close', function() {
     console.log('Twitter', 'Connection closed.')
   })
+
   self.ts.on('end', function() {
     console.log('Twitter', 'End of stream, no more tweets?')
   })
+
   self.ts.on('error', function(error) {
-      console.log('Twitter', 'Error: ' + (error.code ? error.code + ' ' : '') + error.message)
-    })
-    // arguments are: keywords, locations, users, count, callback
+    console.log('Twitter', 'Error: ' + (error.code ? error.code + ' ' : '') + error.message)
+  })
+
+  // arguments are: keywords, locations, users, count, callback
   self.ts.start(null, null, self.config.twitter_ids)
-    // cache the newest tweet on startup:
-    // this handles the corner case where we have an 
-    // exceptionally old tweet, or no tweet, 
-    // because the bot has been off
-    // missing updates from the streaming API
+
+  // cache the newest tweet on startup
   self.getMostRecent()
 
-  self.core.emit("ratelimit.!twitter", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!tweet", self.cb, config.ratelimit)
+  self.core.emit("cmdratelimit.twitter|tweet", self.cb, config.ratelimit)
+
 }
 
 module.exports = {

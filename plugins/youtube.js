@@ -77,11 +77,11 @@ var p = function(core, config, state) {
     self.update(true)
   }
 
-  self.core.emit("ratelimit.!youtube", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!yt", self.cb, config.ratelimit)
-  self.core.emit("ratelimit.!video", self.cb, config.ratelimit)
+  self.core.emit("cmdratelimit.youtube|yt|video", self.cb, config.ratelimit)
 
   setInterval(self.update, self.config.checktime)
+  self.update()
+
 }
 
 module.exports = {

@@ -4,6 +4,10 @@ var p = function(core, config, state) {
   this.config = config;
   this.state = state;
 
+  // only function in debug mode
+  if (!core.debug)
+    return;
+
   self.core.emit("cmd.givemeblt|blt", function(arg, payload) {
     self.core.say("/me gives a juicy BLT to " + payload.nick);
   });

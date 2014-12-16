@@ -14,6 +14,7 @@ var c = function() {
   });
 
   var self = this;
+  this.debug = false;
   // object, keyed by the name of the plugin, value is the instantiated plugin
   this.plugins = {};
 
@@ -22,9 +23,10 @@ var c = function() {
 
   // expose logging functions
   this.log = console.log; // TODO make it "better"
-  if (process.argv.length > 2)
+  if (process.argv.length > 2) {
     this.d = console.log;
-  else
+    this.debug = true;
+  } else
     this.d = function() {};
 
   var files = fs.readdirSync("plugins");
