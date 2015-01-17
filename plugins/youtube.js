@@ -61,7 +61,7 @@ var p = function(core, config, state) {
       video = self.state.lastvideo
 
       var output = '"' + video.snippet.title + '"' + " posted " + moment(video.snippet.publishedAt).fromNow() + " youtube.com/watch/" + video.contentDetails.upload.videoId
-      self.state.lastcheck = now
+      self.state.lastcheck = Date.now()
       self.state.lastresult = output
       self.core.say(output)
     })
